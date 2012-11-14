@@ -5,6 +5,8 @@ from django.utils import simplejson
 from django.views.generic.base import View
 from django.http import HttpResponse, Http404
 
+from urllib import unquote
+
 from dajaxice.exceptions import FunctionNotCallableError
 from dajaxice.core import dajaxice_functions, dajaxice_config
 
@@ -36,7 +38,8 @@ class DajaxiceRequest(View):
         if dajaxice_functions.is_callable(name, request.method):
 
             function = dajaxice_functions.get(name)
-            data = getattr(request, function.method).get('argv', '')
+            #data = getattr(request, function.method).get('argv', '')
+            data = unquote(request.body.split('=')[1])
 
             # Clean the argv
             if data != 'undefined':
